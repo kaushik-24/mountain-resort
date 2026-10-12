@@ -1,6 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register GSAP plugins
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 // A simple hook for scroll reveal effects
 function useReveal() {
@@ -25,70 +32,211 @@ export default function Home() {
   const [setSection2, section2Visible] = useReveal();
   const [setSection3, section3Visible] = useReveal();
 
+  // Hero section refs
+  const heroRef = useRef<HTMLElement | null>(null);
+  const heroImgWrapperRef = useRef<HTMLDivElement | null>(null);
+  const heroImgRef = useRef<HTMLImageElement | null>(null);
+  const flareRef = useRef<HTMLDivElement | null>(null);
+  const textContainerRef = useRef<HTMLDivElement | null>(null);
+  const subtitleRef = useRef<HTMLParagraphElement | null>(null);
+  const title1Ref = useRef<HTMLSpanElement | null>(null);
+  const title2Ref = useRef<HTMLSpanElement | null>(null);
+  const scrollIndicatorRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Initial states for the editorial masked entrance
+      gsap.set(heroImgRef.current, { scale: 1.15, opacity: 0 });
+      gsap.set(subtitleRef.current, { y: '120%', opacity: 0 });
+      gsap.set(title1Ref.current, { y: '120%', opacity: 0 });
+      gsap.set(title2Ref.current, { y: '120%', opacity: 0 });
+      gsap.set(scrollIndicatorRef.current, { opacity: 0, y: 25 });
+
+      // 2. Master Entrance Timeline
+      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+      tl.to(heroImgRef.current, {
+        opacity: 0.55,
+        scale: 1.05,
+        duration: 2.2,
+        ease: 'power3.out'
+      })
+      .to(subtitleRef.current, {
+        y: '0%',
+        opacity: 1,
+        duration: 1.2
+      }, '-=1.6')
+      .to(title1Ref.current, {
+        y: '0%',
+        opacity: 1,
+        duration: 1.4
+      }, '-=1.2')
+      .to(title2Ref.current, {
+        y: '0%',
+        opacity: 1,
+        duration: 1.4
+      }, '-=1.2')
+      .to(scrollIndicatorRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power2.out'
+      }, '-=0.8');
+
+      // 3. Scroll-Driven Hero Depth Dissolve (ScrollTrigger)
+      if (heroRef.current) {
+        gsap.to(heroImgRef.current, {
+          y: 120,
+          scale: 1.15,
+          opacity: 0.15,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true
+          }
+        });
+
+        gsap.to(textContainerRef.current, {
+          y: -100,
+          opacity: 0,
+          filter: 'blur(6px)',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: '60% top',
+            scrub: true
+          }
+        });
+
+        gsap.to(scrollIndicatorRef.current, {
+          opacity: 0,
+          y: -30,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: '20% top',
+            scrub: true
+          }
+        });
+      }
+
+      // 4. Subtle 2.5D Mouse Parallax & Interactive Dawn Light (Desktop / Fine Pointer)
+      const hasFinePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches;
+      if (hasFinePointer && heroRef.current) {
+        const xImg = gsap.quickTo(heroImgWrapperRef.current, 'x', { duration: 1.4, ease: 'power2.out' });
+        const yImg = gsap.quickTo(heroImgWrapperRef.current, 'y', { duration: 1.4, ease: 'power2.out' });
+        const xText = gsap.quickTo(textContainerRef.current, 'x', { duration: 0.9, ease: 'power2.out' });
+        const yText = gsap.quickTo(textContainerRef.current, 'y', { duration: 0.9, ease: 'power2.out' });
+
+        const handleMouseMove = (e: MouseEvent) => {
+          const rect = heroRef.current?.getBoundingClientRect();
+          if (!rect) return;
+          const nx = (e.clientX / rect.width) - 0.5;
+          const ny = (e.clientY / rect.height) - 0.5;
+
+          xImg(nx * -22);
+          yImg(ny * -16);
+          xText(nx * 18);
+          yText(ny * 12);
+
+          if (flareRef.current) {
+            const relX = e.clientX - rect.left;
+            const relY = e.clientY - rect.top;
+            flareRef.current.style.background = `radial-gradient(650px circle at ${relX}px ${relY}px, rgba(184, 153, 98, 0.12), transparent 70%)`;
+          }
+        };
+
+        const heroEl = heroRef.current;
+        heroEl.addEventListener('mousemove', handleMouseMove);
+
+        return () => {
+          heroEl.removeEventListener('mousemove', handleMouseMove);
+        };
+      }
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div style={{ backgroundColor: 'var(--color-bg)' }}>
       
       {/* Immersive Cinematic Hero */}
-      <section style={{ height: '110vh', position: 'relative', overflow: 'hidden' }}>
-        <div style={{
-          position: 'absolute',
-          top: 0, left: 0, width: '100%', height: '100%',
-        }}>
+      <section 
+        ref={heroRef}
+        style={{ height: '110vh', position: 'relative', overflow: 'hidden' }}
+      >
+        {/* Mountain Image Background Wrapper */}
+        <div 
+          ref={heroImgWrapperRef}
+          style={{
+            position: 'absolute',
+            top: '-5%', left: '-5%', width: '110%', height: '110%',
+            willChange: 'transform'
+          }}
+        >
           <img 
+            ref={heroImgRef}
             src="/images/hero.png" 
             alt="Misty Fewa Lake" 
-            className="ambient-image"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5 }} 
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
           />
           {/* Vignette overlay */}
           <div style={{
             position: 'absolute',
             top: 0, left: 0, width: '100%', height: '100%',
             background: 'radial-gradient(circle at center, transparent 0%, var(--color-bg) 100%)',
-            opacity: 0.8
+            opacity: 0.82
           }}></div>
         </div>
 
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: 'clamp(1.5rem, 8vw, 10%)',
-          right: 'clamp(1.5rem, 8vw, 10%)',
-          maxWidth: '850px',
-          transform: 'translateY(-50%)',
-          zIndex: 10
-        }}>
-          <p className="reveal-text" style={{ 
-            textTransform: 'uppercase', 
-            letterSpacing: 'clamp(3px, 1.5vw, 8px)', 
-            fontSize: 'clamp(0.7rem, 2vw, 0.8rem)',
-            color: 'var(--color-accent)',
-            marginBottom: '1rem'
-          }}>
-            Awaken to the Annapurnas
-          </p>
-          <h1 className="reveal-text delay-1" style={{ 
-            fontSize: 'clamp(3.25rem, 11vw, 9rem)', 
-            letterSpacing: '-2px',
-            lineHeight: 0.95,
-            color: '#fff'
-          }}>
-            Breathe<br/>
-            <span style={{ fontStyle: 'italic', color: 'var(--color-text-muted)' }}>again.</span>
+        {/* Interactive Dawn Mist Flare */}
+        <div ref={flareRef} className="hero-ambient-flare"></div>
+
+        {/* Floating Typography */}
+        <div 
+          ref={textContainerRef}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: 'clamp(1.5rem, 8vw, 10%)',
+            right: 'clamp(1.5rem, 8vw, 10%)',
+            maxWidth: '850px',
+            transform: 'translateY(-50%)',
+            zIndex: 10,
+            willChange: 'transform, opacity, filter'
+          }}
+        >
+          <div className="hero-line-mask">
+            <p ref={subtitleRef} className="hero-subtitle">
+              Awaken to the Annapurnas
+            </p>
+          </div>
+          <h1>
+            <span className="hero-line-mask">
+              <span ref={title1Ref} className="hero-title-line">Breathe</span>
+            </span>
+            <span className="hero-line-mask">
+              <span ref={title2Ref} className="hero-title-line hero-title-italic">again.</span>
+            </span>
           </h1>
         </div>
         
-        {/* Scroll indicator */}
-        <div className="reveal-text delay-3" style={{
-          position: 'absolute',
-          bottom: '10vh',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1rem'
-        }}>
+        {/* Scroll indicator with smooth scroll trigger */}
+        <div 
+          ref={scrollIndicatorRef}
+          className="hero-scroll-indicator"
+          onClick={() => {
+            window.scrollTo({ top: window.innerHeight * 0.95, behavior: 'smooth' });
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Scroll to next section"
+        >
           <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '3px', color: 'var(--color-text-muted)' }}>Descend</span>
           <div style={{ width: '1px', height: '60px', background: 'linear-gradient(to bottom, var(--color-text-muted), transparent)' }}></div>
         </div>
