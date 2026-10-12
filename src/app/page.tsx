@@ -34,10 +34,11 @@ export default function Home() {
 
   // Hero section refs
   const heroRef = useRef<HTMLElement | null>(null);
-  const heroImgWrapperRef = useRef<HTMLDivElement | null>(null);
-  const heroImgRef = useRef<HTMLImageElement | null>(null);
+  const heroImgParallaxRef = useRef<HTMLDivElement | null>(null);
+  const heroImgScrollRef = useRef<HTMLDivElement | null>(null);
   const flareRef = useRef<HTMLDivElement | null>(null);
-  const textContainerRef = useRef<HTMLDivElement | null>(null);
+  const textScrollRef = useRef<HTMLDivElement | null>(null);
+  const textParallaxRef = useRef<HTMLDivElement | null>(null);
   const subtitleRef = useRef<HTMLParagraphElement | null>(null);
   const title1Ref = useRef<HTMLSpanElement | null>(null);
   const title2Ref = useRef<HTMLSpanElement | null>(null);
@@ -45,92 +46,86 @@ export default function Home() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Initial states for the editorial masked entrance
-      gsap.set(heroImgRef.current, { scale: 1.15, opacity: 0 });
-      gsap.set(subtitleRef.current, { y: '120%', opacity: 0 });
-      gsap.set(title1Ref.current, { y: '120%', opacity: 0 });
-      gsap.set(title2Ref.current, { y: '120%', opacity: 0 });
-      gsap.set(scrollIndicatorRef.current, { opacity: 0, y: 25 });
-
-      // 2. Master Entrance Timeline
+      // 1. Entrance timeline for masked typography and indicator
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-      tl.to(heroImgRef.current, {
-        opacity: 0.55,
-        scale: 1.05,
-        duration: 2.2,
-        ease: 'power3.out'
-      })
-      .to(subtitleRef.current, {
-        y: '0%',
-        opacity: 1,
-        duration: 1.2
-      }, '-=1.6')
-      .to(title1Ref.current, {
-        y: '0%',
-        opacity: 1,
-        duration: 1.4
-      }, '-=1.2')
-      .to(title2Ref.current, {
-        y: '0%',
-        opacity: 1,
-        duration: 1.4
-      }, '-=1.2')
-      .to(scrollIndicatorRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power2.out'
-      }, '-=0.8');
+      tl.fromTo(subtitleRef.current, 
+        { y: '120%', opacity: 0 }, 
+        { y: '0%', opacity: 1, duration: 1.2 }
+      )
+      .fromTo(title1Ref.current, 
+        { y: '120%', opacity: 0 }, 
+        { y: '0%', opacity: 1, duration: 1.4 }, 
+        '-=1.0'
+      )
+      .fromTo(title2Ref.current, 
+        { y: '120%', opacity: 0 }, 
+        { y: '0%', opacity: 1, duration: 1.4 }, 
+        '-=1.2'
+      )
+      .fromTo(scrollIndicatorRef.current, 
+        { y: 25, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 1, ease: 'power2.out' }, 
+        '-=0.8'
+      );
 
-      // 3. Scroll-Driven Hero Depth Dissolve (ScrollTrigger)
-      if (heroRef.current) {
-        gsap.to(heroImgRef.current, {
-          y: 120,
-          scale: 1.15,
-          opacity: 0.15,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true
+      // 2. Scroll-Driven Hero Depth Dissolve (Dedicated scroll layers only)
+      if (heroRef.current && heroImgScrollRef.current && textScrollRef.current && scrollIndicatorRef.current) {
+        gsap.fromTo(heroImgScrollRef.current, 
+          { y: 0, scale: 1, opacity: 1 },
+          {
+            y: 120,
+            scale: 1.12,
+            opacity: 0.25,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true
+            }
           }
-        });
+        );
 
-        gsap.to(textContainerRef.current, {
-          y: -100,
-          opacity: 0,
-          filter: 'blur(6px)',
-          ease: 'none',
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top top',
-            end: '60% top',
-            scrub: true
+        gsap.fromTo(textScrollRef.current, 
+          { y: 0, opacity: 1, filter: 'blur(0px)' },
+          {
+            y: -100,
+            opacity: 0,
+            filter: 'blur(6px)',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: '60% top',
+              scrub: true
+            }
           }
-        });
+        );
 
-        gsap.to(scrollIndicatorRef.current, {
-          opacity: 0,
-          y: -30,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top top',
-            end: '20% top',
-            scrub: true
+        gsap.fromTo(scrollIndicatorRef.current, 
+          { y: 0, opacity: 1 },
+          {
+            y: -30,
+            opacity: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: '20% top',
+              scrub: true
+            }
           }
-        });
+        );
       }
 
-      // 4. Subtle 2.5D Mouse Parallax & Interactive Dawn Light (Desktop / Fine Pointer)
+      // 3. Subtle 2.5D Mouse Parallax & Interactive Dawn Light (Dedicated parallax layers only)
       const hasFinePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches;
-      if (hasFinePointer && heroRef.current) {
-        const xImg = gsap.quickTo(heroImgWrapperRef.current, 'x', { duration: 1.4, ease: 'power2.out' });
-        const yImg = gsap.quickTo(heroImgWrapperRef.current, 'y', { duration: 1.4, ease: 'power2.out' });
-        const xText = gsap.quickTo(textContainerRef.current, 'x', { duration: 0.9, ease: 'power2.out' });
-        const yText = gsap.quickTo(textContainerRef.current, 'y', { duration: 0.9, ease: 'power2.out' });
+      if (hasFinePointer && heroRef.current && heroImgParallaxRef.current && textParallaxRef.current) {
+        const xImg = gsap.quickTo(heroImgParallaxRef.current, 'x', { duration: 1.4, ease: 'power2.out' });
+        const yImg = gsap.quickTo(heroImgParallaxRef.current, 'y', { duration: 1.4, ease: 'power2.out' });
+        const xText = gsap.quickTo(textParallaxRef.current, 'x', { duration: 0.9, ease: 'power2.out' });
+        const yText = gsap.quickTo(textParallaxRef.current, 'y', { duration: 0.9, ease: 'power2.out' });
 
         const handleMouseMove = (e: MouseEvent) => {
           const rect = heroRef.current?.getBoundingClientRect();
@@ -170,36 +165,40 @@ export default function Home() {
         ref={heroRef}
         style={{ height: '110vh', position: 'relative', overflow: 'hidden' }}
       >
-        {/* Mountain Image Background Wrapper */}
+        {/* Mountain Image Background Parallax (Mouse pointer layer) */}
         <div 
-          ref={heroImgWrapperRef}
+          ref={heroImgParallaxRef}
           style={{
             position: 'absolute',
-            top: '-5%', left: '-5%', width: '110%', height: '110%',
+            top: '-6%', left: '-6%', width: '112%', height: '112%',
             willChange: 'transform'
           }}
         >
-          <img 
-            ref={heroImgRef}
-            src="/images/hero.png" 
-            alt="Misty Fewa Lake" 
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-          />
-          {/* Vignette overlay */}
-          <div style={{
-            position: 'absolute',
-            top: 0, left: 0, width: '100%', height: '100%',
-            background: 'radial-gradient(circle at center, transparent 0%, var(--color-bg) 100%)',
-            opacity: 0.82
-          }}></div>
+          {/* Mountain Image Background Scroll (ScrollTrigger layer) */}
+          <div 
+            ref={heroImgScrollRef}
+            style={{ width: '100%', height: '100%', position: 'relative', willChange: 'transform, opacity' }}
+          >
+            <img 
+              src="/images/hero.png" 
+              alt="Misty Fewa Lake" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }} 
+            />
+            {/* Vignette overlay */}
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(circle at center, transparent 0%, var(--color-bg) 100%)',
+              opacity: 0.82
+            }}></div>
+          </div>
         </div>
 
         {/* Interactive Dawn Mist Flare */}
         <div ref={flareRef} className="hero-ambient-flare"></div>
 
-        {/* Floating Typography */}
+        {/* Floating Typography Anchor (Static CSS centering) */}
         <div 
-          ref={textContainerRef}
           style={{
             position: 'absolute',
             top: '50%',
@@ -207,23 +206,34 @@ export default function Home() {
             right: 'clamp(1.5rem, 8vw, 10%)',
             maxWidth: '850px',
             transform: 'translateY(-50%)',
-            zIndex: 10,
-            willChange: 'transform, opacity, filter'
+            zIndex: 10
           }}
         >
-          <div className="hero-line-mask">
-            <p ref={subtitleRef} className="hero-subtitle">
-              Awaken to the Annapurnas
-            </p>
+          {/* Scroll Layer (ScrollTrigger depth & blur out) */}
+          <div 
+            ref={textScrollRef}
+            style={{ willChange: 'transform, opacity, filter' }}
+          >
+            {/* Mouse Parallax Layer (Local x & y drift) */}
+            <div 
+              ref={textParallaxRef}
+              style={{ willChange: 'transform' }}
+            >
+              <div className="hero-line-mask">
+                <p ref={subtitleRef} className="hero-subtitle">
+                  Awaken to the Annapurnas
+                </p>
+              </div>
+              <h1>
+                <span className="hero-line-mask">
+                  <span ref={title1Ref} className="hero-title-line">Breathe</span>
+                </span>
+                <span className="hero-line-mask">
+                  <span ref={title2Ref} className="hero-title-line hero-title-italic">again.</span>
+                </span>
+              </h1>
+            </div>
           </div>
-          <h1>
-            <span className="hero-line-mask">
-              <span ref={title1Ref} className="hero-title-line">Breathe</span>
-            </span>
-            <span className="hero-line-mask">
-              <span ref={title2Ref} className="hero-title-line hero-title-italic">again.</span>
-            </span>
-          </h1>
         </div>
         
         {/* Scroll indicator with smooth scroll trigger */}
