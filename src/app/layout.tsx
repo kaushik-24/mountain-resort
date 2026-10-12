@@ -27,10 +27,12 @@ export default function RootLayout({
 
         <footer style={{ 
           backgroundColor: '#030404', 
-          padding: '10rem 4rem 4rem 4rem',
+          padding: 'clamp(5rem, 12vw, 10rem) 1.5rem 4rem 1.5rem',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
+          maxWidth: '100vw',
+          boxSizing: 'border-box'
         }}>
           <h2 style={{ 
             fontFamily: 'var(--font-serif)', 
@@ -42,7 +44,7 @@ export default function RootLayout({
             Leave the noise behind.
           </h2>
           <div style={{ width: '1px', height: '80px', backgroundColor: 'var(--color-surface)', marginBottom: '4rem' }}></div>
-          <div style={{ display: 'flex', gap: '3rem', fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2rem', fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>
             <span>Pokhara, Nepal</span>
             <span>Est. 2026</span>
           </div>

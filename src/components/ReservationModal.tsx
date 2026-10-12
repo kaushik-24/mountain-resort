@@ -181,7 +181,7 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
                 </select>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
                 <div>
                   <label style={{
                     display: 'block',

@@ -29,8 +29,8 @@ export default function Stay() {
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg)', minHeight: '100vh', paddingBottom: '10rem' }}>
-      <header style={{ padding: '15rem 10% 10rem 10%', textAlign: 'center' }}>
-        <h1 className="reveal-text" style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', marginBottom: '2rem', letterSpacing: '-1px' }}>
+      <header style={{ padding: 'clamp(8rem, 15vw, 15rem) clamp(1.25rem, 6vw, 10%) clamp(4rem, 10vw, 10rem)', textAlign: 'center' }}>
+        <h1 className="reveal-text" style={{ fontSize: 'clamp(2.75rem, 8vw, 6rem)', marginBottom: '2rem', letterSpacing: '-1px' }}>
           Sanctuaries of <span style={{ fontStyle: 'italic', color: 'var(--color-text-muted)' }}>Rest</span>
         </h1>
         <p className="reveal-text delay-1" style={{ fontSize: '1.2rem', color: 'var(--color-text-muted)', maxWidth: '600px', margin: '0 auto', lineHeight: 2 }}>
@@ -38,23 +38,14 @@ export default function Stay() {
         </p>
       </header>
 
-      <section style={{ padding: '0 5%' }}>
+      <section style={{ padding: '0 clamp(1.25rem, 5vw, 5%)' }}>
         {suites.map((suite, index) => (
-          <div key={suite.id} style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(12, 1fr)', 
-            gap: '2rem',
-            alignItems: 'center',
-            marginBottom: '15rem'
-          }}>
-            <div style={{ 
-              gridColumn: index % 2 === 0 ? '2 / 6' : '8 / 12',
-              order: index % 2 === 0 ? 1 : 2 
-            }}>
+          <div key={suite.id} className="stay-suite-grid">
+            <div className={index % 2 === 0 ? 'stay-suite-info-even' : 'stay-suite-info-odd'}>
               <p style={{ color: 'var(--color-accent)', textTransform: 'uppercase', letterSpacing: '3px', fontSize: '0.7rem', marginBottom: '1rem' }}>
                 Suite {suite.id} — Starting from {suite.price}
               </p>
-              <h2 style={{ fontSize: '3rem', marginBottom: '2rem', fontStyle: 'italic', lineHeight: 1.1 }}>{suite.name}</h2>
+              <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '2rem', fontStyle: 'italic', lineHeight: 1.1 }}>{suite.name}</h2>
               <p style={{ fontSize: '1.1rem', color: 'var(--color-text-muted)', marginBottom: '3rem' }}>
                 {suite.description}
               </p>
@@ -62,7 +53,7 @@ export default function Stay() {
                 background: 'transparent',
                 border: '1px solid var(--color-surface)',
                 color: 'var(--color-text)',
-                padding: '1rem 3rem',
+                padding: '1rem clamp(1.5rem, 4vw, 3rem)',
                 textTransform: 'uppercase',
                 letterSpacing: '2px',
                 fontSize: '0.8rem',
@@ -81,11 +72,7 @@ export default function Stay() {
               </button>
             </div>
             
-            <div style={{ 
-              gridColumn: index % 2 === 0 ? '7 / 12' : '2 / 7',
-              order: index % 2 === 0 ? 2 : 1,
-              position: 'relative'
-            }}>
+            <div className={index % 2 === 0 ? 'stay-suite-img-even' : 'stay-suite-img-odd'}>
               <img src={suite.image} alt={suite.name} style={{ width: '100%', aspectRatio: index % 2 === 0 ? '3/4' : '4/3', objectFit: 'cover', filter: 'brightness(0.8)' }} />
             </div>
           </div>

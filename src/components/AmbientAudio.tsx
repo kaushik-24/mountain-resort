@@ -136,14 +136,14 @@ export default function AmbientAudio() {
           }}>
             Would you like to experience the site with sound?
           </p>
-          <div style={{ display: 'flex', gap: '2rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem', width: '100%', maxWidth: '400px', padding: '0 1rem', boxSizing: 'border-box' }}>
             <button 
               onClick={() => handleEnter(true)}
               style={{
                 background: 'transparent',
                 border: '1px solid var(--color-accent)',
                 color: 'var(--color-accent)',
-                padding: '1rem 3rem',
+                padding: '1rem clamp(1.5rem, 4vw, 3rem)',
                 textTransform: 'uppercase',
                 letterSpacing: '2px',
                 fontSize: '0.8rem',
@@ -167,7 +167,7 @@ export default function AmbientAudio() {
                 background: 'transparent',
                 border: 'none',
                 color: 'var(--color-text-muted)',
-                padding: '1rem 2rem',
+                padding: '1rem clamp(1.5rem, 4vw, 2rem)',
                 textTransform: 'uppercase',
                 letterSpacing: '2px',
                 fontSize: '0.8rem',

@@ -52,23 +52,25 @@ export default function Home() {
         <div style={{
           position: 'absolute',
           top: '50%',
-          left: '10%',
+          left: 'clamp(1.5rem, 8vw, 10%)',
+          right: 'clamp(1.5rem, 8vw, 10%)',
+          maxWidth: '850px',
           transform: 'translateY(-50%)',
           zIndex: 10
         }}>
           <p className="reveal-text" style={{ 
             textTransform: 'uppercase', 
-            letterSpacing: '8px', 
-            fontSize: '0.8rem',
+            letterSpacing: 'clamp(3px, 1.5vw, 8px)', 
+            fontSize: 'clamp(0.7rem, 2vw, 0.8rem)',
             color: 'var(--color-accent)',
             marginBottom: '1rem'
           }}>
             Awaken to the Annapurnas
           </p>
           <h1 className="reveal-text delay-1" style={{ 
-            fontSize: 'clamp(4rem, 10vw, 9rem)', 
+            fontSize: 'clamp(3.25rem, 11vw, 9rem)', 
             letterSpacing: '-2px',
-            lineHeight: 0.9,
+            lineHeight: 0.95,
             color: '#fff'
           }}>
             Breathe<br/>
@@ -94,7 +96,7 @@ export default function Home() {
 
       {/* Sensory Statement Section */}
       <section ref={setSection1} style={{
-        padding: '15rem 10%',
+        padding: 'clamp(8rem, 15vw, 15rem) clamp(1.25rem, 6vw, 10%)',
         position: 'relative'
       }}>
         <div style={{ 
@@ -103,7 +105,7 @@ export default function Home() {
           transform: section1Visible ? 'translateY(0)' : 'translateY(50px)',
           transition: 'all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1)'
         }}>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.75rem)', fontStyle: 'italic', color: 'var(--color-text)', marginBottom: '2.5rem', lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.5vw, 3.75rem)', fontStyle: 'italic', color: 'var(--color-text)', marginBottom: '2.5rem', lineHeight: 1.2 }}>
             &ldquo;A place where time doesn&apos;t tick. It flows like the mist off Fewa Lake.&rdquo;
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem', marginTop: '2rem' }}>
@@ -118,12 +120,12 @@ export default function Home() {
       </section>
 
       {/* Asymmetrical Image Gallery - Feeling of the Stay */}
-      <section style={{ padding: '0 5%', marginBottom: '15rem' }}>
+      <section style={{ padding: '0 clamp(1.25rem, 5vw, 5%)', marginBottom: 'clamp(8rem, 15vw, 15rem)' }}>
         <div className="gallery-grid">
           
           <div className="gallery-col-1">
             <img src="/images/architecture.png" alt="Architecture" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', filter: 'brightness(0.7)' }} />
-            <div style={{ position: 'absolute', bottom: '-2rem', right: '-2rem', background: 'var(--color-surface)', padding: '2rem', width: '70%', maxWidth: '320px' }}>
+            <div className="gallery-badge">
               <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', fontStyle: 'italic' }}>Grounded in stone.</p>
               <p style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--color-text-muted)', marginTop: '1rem' }}>Local materials</p>
             </div>
@@ -148,13 +150,13 @@ export default function Home() {
         }}>
           <img src="/images/suite3.png" alt="Balcony" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.5)' }} />
         </div>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '5rem', fontStyle: 'italic', letterSpacing: '2px', color: '#fff' }}>Stillness.</h2>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', width: '90%' }}>
+          <h2 style={{ fontSize: 'clamp(2.8rem, 11vw, 5rem)', fontStyle: 'italic', letterSpacing: '2px', color: '#fff' }}>Stillness.</h2>
         </div>
       </section>
 
       {/* The Final Invitation */}
-      <section ref={setSection3} style={{ padding: '15rem 10%', textAlign: 'center' }}>
+      <section ref={setSection3} style={{ padding: 'clamp(8rem, 15vw, 15rem) clamp(1.25rem, 6vw, 10%)', textAlign: 'center' }}>
         <div style={{ 
           opacity: section3Visible ? 1 : 0, 
           transform: section3Visible ? 'scale(1)' : 'scale(0.95)',
@@ -163,14 +165,14 @@ export default function Home() {
           <p style={{ textTransform: 'uppercase', letterSpacing: '4px', color: 'var(--color-accent)', fontSize: '0.9rem', marginBottom: '2rem' }}>
             The Journey Awaits
           </p>
-          <h2 style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', marginBottom: '4rem', lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', marginBottom: '4rem', lineHeight: 1.2 }}>
             Your sanctuary is ready.<br/>
             <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Will you answer the call?</span>
           </h2>
           <a href="/stay" style={{
             display: 'inline-block',
             border: '1px solid var(--color-accent)',
-            padding: '1.5rem 4rem',
+            padding: '1.25rem clamp(2rem, 5vw, 4rem)',
             textTransform: 'uppercase',
             letterSpacing: '3px',
             fontSize: '0.8rem',
